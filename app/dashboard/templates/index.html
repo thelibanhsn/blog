@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mx-auto mt-10">
+    
+        <h2 class="text-3xl font-bold mb-4">Dashboard</h2>
+    </div>
+    <div class="">
+        <div class="bg-white shadow-md rounded p-4">
+            <div class="mb-6 flex justify-between items-center">
+
+                <h3 class="text-xl font-semibold mb-2">Blogs</h3>
+                <a href="{{ url_for('dashboard_bp.create_blog') }}" class="bg-blue-600 text-white px-4 py-2 rounded mb-4 inline-block">Create New Blog</a>
+            </div>
+            <ul id="blog-list" class="px-5 max-w-5xl mx-auto">
+                <!-- if blogs, display it else create new one -->
+                {% if not blogs %}
+                    <li class="mb-2">No blogs available. <a href="{{ url_for('dashboard_bp.create_blog') }}" class="text-blue-600 hover:underline">Create one now!</a></li>
+                {% endif %}
+                <!-- Loop through the blogs and display them -->
+                {% for blog in blogs %}
+                    <li class="mb-6 border-b pb-2 last:border-b-0 shadow-md rounded p-4 bg-gray-50">
+                        <div class="flex justify-between items-center mb-2">
+                            <a href="{{ url_for('dashboard_bp.blog_detail', blog_id=blog.id) }} " class="text-blue-600 hover:underline cursor-pointor text-2xl font-semibold ">{{ blog.title }}</a>
+                            <div>
+
+                                <!-- Add a button to edit the blog post -->
+                               <a href="{{ url_for('dashboard_bp.edit_blog', blog_id=blog.id) }}" class="bg-blue-600 text-white px-2 py-1 rounded text-sm">Edit</a> 
+                               <!-- Add a button to delete the blog post -->
+                               <a href="{{ url_for('dashboard_bp.delete_blog', blog_id=blog.id) }}" class="bg-red-600 text-white px-2 py-1 rounded text-sm">Delete</a>
+                            </div>
+                        </div>
+                        <!-- add the content a link to read more goes to blog detail -->
+
+                        <p class="text-gray-600 mb-4 font-semibold">{{ blog.content[:150] }}...<a href="{{ url_for('dashboard_bp.blog_detail', blog_id=blog.id) }} " class="hover:underline text-blue-600 font-semibold">Read More ...</a></p>
+                        <p class="text-gray-500 text-sm mb-2">Published on: {{ blog.created_at.strftime('%Y-%m-%d') }}</p>
+                        <p class="text-gray-500 text-sm">Tags: 
+                            {% for tag in blog.tags %}
+                                <span class="bg-blue-100 text-blue-800 text-xs font-medium mr-1 px-2.5 py-0.5 rounded">{{ tag.name }}</span>
+                            {% endfor %}
+                        </p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+    </div>
+
+    {%endblock%}
